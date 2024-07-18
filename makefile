@@ -10,6 +10,9 @@ all: build
 build:
 	go build -o $(BINARY_PATH)$(BINARY_NAME) $(CMD_DIR)
 
+dev:
+	go run $(CMD_DIR)
+
 test:
 	go test $(PKG_DIR)
 
