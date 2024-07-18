@@ -38,5 +38,6 @@ func main() {
 	api.Get("/users/:id", userHandler.GetUserHandler)
 	api.Delete("/users/:id", userHandler.HandleDeleteUser)
 	api.Post("/users", userHandler.HandleCreateUser)
+	api.Put("/users/:id", userHandler.HandleUpdateUser)
 	app.Listen(":5000")
 }
