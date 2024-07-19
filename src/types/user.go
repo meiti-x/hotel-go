@@ -29,7 +29,7 @@ func (c *CreateUserParmas) Validate() map[string]string {
 	}
 
 	if len(c.LastName) < lastNameMinLen {
-		errors["lastName"] = fmt.Sprintf("last name length most be greater than %d")
+		errors["lastName"] = fmt.Sprintf("last name length most be greater than %d", lastNameMinLen)
 	}
 
 	if len(c.Password) < passwordMinLen {

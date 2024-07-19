@@ -29,7 +29,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	userHandler := handler.NewUserHandler(db.NewMongoUserStore(client))
+	userHandler := handler.NewUserHandler(db.NewMongoUserStore(client, dbName))
 
 	app := fiber.New(config)
 	api := app.Group("/api/v1")
