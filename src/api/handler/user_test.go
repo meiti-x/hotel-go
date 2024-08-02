@@ -20,8 +20,7 @@ type testDB struct {
 }
 
 const (
-	dbUri  = "mongodb://localhost:27017"
-	dbName = "hotel_reservation_test"
+	dbUri = "mongodb://localhost:27017"
 )
 
 func setup(t *testing.T) *testDB {
@@ -30,7 +29,7 @@ func setup(t *testing.T) *testDB {
 		log.Fatal(err)
 	}
 	return &testDB{
-		UserStore: db.NewMongoUserStore(client, dbName),
+		UserStore: db.NewMongoUserStore(client, db.TestDBNAME),
 	}
 }
 

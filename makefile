@@ -24,3 +24,7 @@ fmt:
 
 run: build
 	./$(BINARY_PATH)$(BINARY_NAME)
+
+
+seed: build
+	go run ./src/scripts/seed.go
