@@ -7,23 +7,31 @@ import (
 )
 
 type HotelHandler struct {
-	hotelStore db.HotelStore
-	roomStore  db.RoomStore
+	store db.Store
 }
 
-func NewHotelHanlder(hotelStore db.HotelStore, roomStore db.RoomStore) *HotelHandler {
+func NewHotelHanlder(store *db.Store) *HotelHandler {
 	return &HotelHandler{
-		hotelStore: hotelStore,
-		roomStore:  roomStore,
+		store: *store,
 	}
 }
 
 func (h *HotelHandler) HandleGetHotels(c *fiber.Ctx) error {
-	hotels, err := h.hotelStore.GetAll(c.Context())
+	hotels, err := h.store.Hotel.GetAll(c.Context())
 	if err != nil {
 		return err
 	}
 	return c.JSON(hotels)
+}
+
+func (h *HotelHandler) HandleGetHotel(c *fiber.Ctx) error {
+	hotelID := c.Params("id")
+
+	rooms, err := h.store.Hotel.GetById(c.Context(), hotelID)
+	if err != nil {
+		return err
+	}
+	return c.JSON(rooms)
 }
 
 func (h *HotelHandler) HandleGetHotelRooms(c *fiber.Ctx) error {
@@ -31,7 +39,7 @@ func (h *HotelHandler) HandleGetHotelRooms(c *fiber.Ctx) error {
 	oid, err := db.ToObjectID(hotelID)
 
 	filter := bson.D{{"hotelID", oid}}
-	rooms, err := h.roomStore.GetRooms(c.Context(), filter)
+	rooms, err := h.store.Room.GetRooms(c.Context(), filter)
 	if err != nil {
 		return err
 	}
@@ -41,7 +49,7 @@ func (h *HotelHandler) HandleGetHotelRooms(c *fiber.Ctx) error {
 // func (h *HotelHandler) GetHotelHandler(c *fiber.Ctx) error {
 // 	id := c.Params("id")
 
-// 	user, err := h.hotelStore.GetById(c.Context(), id)
+// 	user, err := h.store.h.GetById(c.Context(), id)
 // 	if err != nil {
 // 		if errors.Is(err, mongo.ErrNoDocuments) {
 // 			return c.JSON(map[string]string{"error": "not found"})
@@ -53,7 +61,7 @@ func (h *HotelHandler) HandleGetHotelRooms(c *fiber.Ctx) error {
 
 // func (h *HotelHandler) HandleDelete(c *fiber.Ctx) error {
 // 	hotelId := c.Params("id")
-// 	if err := h.hotelStore.Delete(c.Context(), hotelId); err != nil {
+// 	if err := h.store.h.Delete(c.Context(), hotelId); err != nil {
 // 		return err
 // 	}
 // 	return c.JSON(map[string]interface{}{
@@ -75,7 +83,7 @@ func (h *HotelHandler) HandleGetHotelRooms(c *fiber.Ctx) error {
 // 	filter := bson.D{{"_id", oid}}
 // 	update := bson.D{{"$set", params}}
 
-// 	if err := h.hotelStore.Update(c.Context(), filter, update); err != nil {
+// 	if err := h.store.h.Update(c.Context(), filter, update); err != nil {
 // 		return err
 // 	}
 // 	return c.JSON(map[string]interface{}{
@@ -98,7 +106,7 @@ func (h *HotelHandler) HandleGetHotelRooms(c *fiber.Ctx) error {
 // 	if errors := params.Validate(); len(errors) > 0 {
 // 		return c.JSON(errors)
 // 	}
-// 	insertdUser, err := h.hotelStore.Insert(c.Context(), user)
+// 	insertdUser, err := h.store.h.Insert(c.Context(), user)
 // 	if err != nil {
 // 		return err
 // 	}

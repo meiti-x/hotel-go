@@ -28,6 +28,8 @@ type Room struct {
 	BasePrice float64            `bson:"basePrice" json:"basePrice"`
 	Price     float64            `bson:"price" json:"price"`
 	HotelID   primitive.ObjectID `bson:"hotelID" json:"hotelID"`
+	SeaSide   bool               `bson:"seaSide" json:"seaSide"`
+	Size      string             `bson:"size" json:"size"`
 }
 
 type CreateHotelParmas struct {

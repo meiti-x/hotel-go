@@ -15,7 +15,7 @@ type HotelStore interface {
 
 	Insert(ctx context.Context, hotel *types.Hotel) (*types.Hotel, error)
 	Update(ctx context.Context, filters bson.D, data bson.D) error
-	// GetById(ctx context.Context, id string) (*types.Hotel, error)
+	GetById(ctx context.Context, id string) (*types.Hotel, error)
 	GetAll(ctx context.Context) ([]*types.Hotel, error)
 	GetAllRooms(ctx context.Context, hotelID string) ([]*types.Hotel, error)
 	// Delete(ctx context.Context, id string) error
@@ -81,4 +81,16 @@ func (s *MongoHotelStore) GetAllRooms(ctx context.Context, hotelID string) ([]*t
 	}
 
 	return hotels, nil
+}
+
+func (s *MongoHotelStore) GetById(ctx context.Context, id string) (*types.Hotel, error) {
+	var hotel types.Hotel
+	oid, err := ToObjectID(id)
+	if err != nil {
+		return nil, err
+	}
+	if err := s.coll.FindOne(ctx, bson.M{"_id": oid}).Decode(&hotel); err != nil {
+		return nil, err
+	}
+	return &hotel, nil
 }
