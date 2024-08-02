@@ -13,8 +13,12 @@ import (
 type HotelStore interface {
 	Dropper
 
-	InsertHotel(ctx context.Context, user *types.Hotel) (*types.Hotel, error)
-	UpdateHotel(ctx context.Context, filters bson.D, data bson.D) error
+	Insert(ctx context.Context, hotel *types.Hotel) (*types.Hotel, error)
+	Update(ctx context.Context, filters bson.D, data bson.D) error
+	// GetById(ctx context.Context, id string) (*types.Hotel, error)
+	GetAll(ctx context.Context) ([]*types.Hotel, error)
+	GetAllRooms(ctx context.Context, hotelID string) ([]*types.Hotel, error)
+	// Delete(ctx context.Context, id string) error
 }
 
 type MongoHotelStore struct {
@@ -33,7 +37,7 @@ func NewMongoHotelStore(client *mongo.Client) *MongoHotelStore {
 	}
 }
 
-func (s *MongoHotelStore) InsertHotel(ctx context.Context, hotel *types.Hotel) (*types.Hotel, error) {
+func (s *MongoHotelStore) Insert(ctx context.Context, hotel *types.Hotel) (*types.Hotel, error) {
 	resp, err := s.coll.InsertOne(ctx, hotel)
 	if err != nil {
 		return nil, err
@@ -43,7 +47,7 @@ func (s *MongoHotelStore) InsertHotel(ctx context.Context, hotel *types.Hotel) (
 	return hotel, nil
 }
 
-func (s *MongoHotelStore) UpdateHotel(ctx context.Context, filters bson.D, data bson.D) error {
+func (s *MongoHotelStore) Update(ctx context.Context, filters bson.D, data bson.D) error {
 	z, err := s.coll.UpdateOne(ctx, filters, data)
 	fmt.Sprintln("z")
 	fmt.Sprintln(z)
@@ -52,4 +56,17 @@ func (s *MongoHotelStore) UpdateHotel(ctx context.Context, filters bson.D, data 
 		return err
 	}
 	return nil
+}
+
+func (s *MongoHotelStore) GetAll(ctx context.Context) ([]*types.Hotel, error) {
+	cur, err := s.coll.Find(ctx, bson.M{})
+	if err != nil {
+		return nil, err
+	}
+	var hotels []*types.Hotel
+	if err := cur.All(ctx, &hotels); err != nil {
+		return nil, err
+	}
+
+	return hotels, nil
 }

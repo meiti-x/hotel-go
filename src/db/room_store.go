@@ -44,7 +44,7 @@ func (s *MongoRoomStore) InsertRoom(ctx context.Context, room *types.Room) (*typ
 			{"rooms", room.ID},
 		}},
 	}
-	if err := s.HotelStore.UpdateHotel(ctx, filter, update); err != nil {
+	if err := s.HotelStore.Update(ctx, filter, update); err != nil {
 		return nil, err
 	}
 
