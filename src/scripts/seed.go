@@ -14,11 +14,11 @@ import (
 var (
 	hotelStore db.HotelStore
 	roomStore  db.RoomStore
+	ctx        = context.Background()
 )
 
 func init() {
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(db.DB_URI))
-	ctx := context.Background()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -31,8 +31,6 @@ func init() {
 }
 
 func seedHotel(name, location string) {
-	ctx := context.Background()
-
 	hotel := types.Hotel{
 		Name:     name,
 		Location: location,
