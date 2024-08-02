@@ -49,7 +49,6 @@ func (s *MongoHotelStore) Insert(ctx context.Context, hotel *types.Hotel) (*type
 
 func (s *MongoHotelStore) Update(ctx context.Context, filters bson.D, data bson.D) error {
 	z, err := s.coll.UpdateOne(ctx, filters, data)
-	fmt.Sprintln("z")
 	fmt.Sprintln(z)
 	fmt.Sprintln("z")
 	if err != nil {
@@ -59,6 +58,19 @@ func (s *MongoHotelStore) Update(ctx context.Context, filters bson.D, data bson.
 }
 
 func (s *MongoHotelStore) GetAll(ctx context.Context) ([]*types.Hotel, error) {
+	cur, err := s.coll.Find(ctx, bson.M{})
+	if err != nil {
+		return nil, err
+	}
+	var hotels []*types.Hotel
+	if err := cur.All(ctx, &hotels); err != nil {
+		return nil, err
+	}
+
+	return hotels, nil
+}
+
+func (s *MongoHotelStore) GetAllRooms(ctx context.Context, hotelID string) ([]*types.Hotel, error) {
 	cur, err := s.coll.Find(ctx, bson.M{})
 	if err != nil {
 		return nil, err
