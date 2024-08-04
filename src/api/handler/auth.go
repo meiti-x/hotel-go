@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/meiti-x/hotel-go/src/db"
 	"go.mongodb.org/mongo-driver/mongo"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthHandler struct {
@@ -38,6 +39,12 @@ func (h *AuthHandler) HandleAuth(c *fiber.Ctx) error {
 		}
 		return err
 	}
+	err = bcrypt.CompareHashAndPassword([]byte(user.EncryptedPassword), []byte(params.Password))
+	if err != nil {
+		return fmt.Errorf("invalid crendintall")
+	}
+
+	fmt.Println("authenicated")
 	fmt.Println(user)
 	return nil
 }
