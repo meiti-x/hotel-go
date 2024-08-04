@@ -6,6 +6,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/meiti-x/hotel-go/src/api/handler"
+	"github.com/meiti-x/hotel-go/src/api/middleware"
 	"github.com/meiti-x/hotel-go/src/db"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -34,18 +35,23 @@ func main() {
 		}
 		userHandler  = handler.NewUserHandler(db.NewMongoUserStore(client))
 		hotelHandler = handler.NewHotelHanlder(store)
+		authHandler  = handler.NewAuthHandler(userStore)
 		app          = fiber.New(config)
-		apiv1        = app.Group("/api/v1")
+		apiv1NoAuth  = app.Group("/api")
+		apiv1        = app.Group("/api/v1", middleware.JWTAuth)
 	)
 
-	// user handler
+	// auth handlers
+	apiv1NoAuth.Post("/auth/login", authHandler.HandleAuth)
+
+	// user handlers
 	apiv1.Get("/users", userHandler.GetUsersHandler)
 	apiv1.Get("/users/:id", userHandler.GetUserHandler)
 	apiv1.Delete("/users/:id", userHandler.HandleDeleteUser)
 	apiv1.Post("/users", userHandler.HandleCreateUser)
 	apiv1.Put("/users/:id", userHandler.HandleUpdateUser)
 
-	// hotel handler
+	// hotel handlers
 	apiv1.Get("/hotels", hotelHandler.HandleGetHotels)
 	apiv1.Get("/hotels/:id", hotelHandler.HandleGetHotel)
 	apiv1.Get("/hotels/:id/rooms", hotelHandler.HandleGetHotelRooms)
