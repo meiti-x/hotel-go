@@ -12,6 +12,7 @@ import (
 type BookingStore interface {
 	InsertBooking(ctx context.Context, booking *types.Booking) (*types.Booking, error)
 	GetBookings(ctx context.Context, filter bson.M) ([]*types.Booking, error)
+	GetRooms(ctx context.Context, filter bson.M) ([]*types.Room, error)
 }
 
 type MongoBookingStore struct {
@@ -48,4 +49,18 @@ func (s *MongoBookingStore) GetBookings(ctx context.Context, filter bson.M) ([]*
 	}
 
 	return bookings, nil
+}
+
+func (s *MongoBookingStore) GetRooms(ctx context.Context, filter bson.M) ([]*types.Room, error) {
+	curr, err := s.coll.Find(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	var rooms []*types.Room
+	if err := curr.All(ctx, &rooms); err != nil {
+		return nil, err
+	}
+
+	return rooms, nil
 }

@@ -37,11 +37,3 @@ type CreateHotelParmas struct {
 	Location string `json:"location"`
 	Rooms    string `json:"rooms"`
 }
-
-// func NewHotelFromParams(params CreateHotelParmas) (*Hotel, error) {
-// 	return &Hotel{
-// 		Name:     params.Name,
-// 		Location: params.Location,
-// 		Rooms:    params.Rooms.(primitive.ObjectID),
-// 	}, nil
-// }

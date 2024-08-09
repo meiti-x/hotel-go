@@ -104,13 +104,18 @@ func (h *RoomHandler) isRoomAvailbeForBook(ctx context.Context, roomId primitive
 	if err != nil {
 		return false, err
 	}
-	for _, cur := range bookings {
-		fmt.Println(cur)
-	}
 
 	ok := len(bookings) == 0
 	if len(bookings) > 0 {
 		return false, nil
 	}
 	return ok, nil
+}
+
+func (h *RoomHandler) HandleGetRooms(c *fiber.Ctx) error {
+	rooms, err := h.store.Room.GetAllRooms(c.Context(), bson.D{})
+	if err != nil {
+		return err
+	}
+	return c.JSON(rooms)
 }
