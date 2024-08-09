@@ -35,7 +35,6 @@ func JWTAuth(userStore db.UserStore) fiber.Handler {
 		if time.Now().Unix() > expires {
 			return fmt.Errorf("Token expired")
 		}
-		fmt.Println("expires", expires)
 		userID := claims["id"].(string)
 		user, err := userStore.GetUserById(c.Context(), userID)
 		if err != nil {
@@ -50,14 +49,11 @@ func JWTAuth(userStore db.UserStore) fiber.Handler {
 }
 
 func validateToken(tokenString string) (jwt.MapClaims, error) {
-	secret := os.Getenv("JWT_SECRET")
-	fmt.Println("secret", secret)
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 		secret := os.Getenv("JWT_SECRET")
-		fmt.Println("secret", secret)
 		if secret == "" {
 			return nil, fmt.Errorf("JWT_SECRET environment variable not set")
 		}

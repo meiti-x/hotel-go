@@ -5,12 +5,13 @@ import (
 )
 
 const (
-	DBNAME           = "hotel-reservation"
-	TestDBNAME       = "hotel_reservation_test"
-	USER_COLLECTION  = "users"
-	HOTEL_COLLECTION = "hotels"
-	ROOM_COLLECTION  = "rooms"
-	DB_URI           = "mongodb://localhost:27017"
+	DBNAME             = "hotel-reservation"
+	TestDBNAME         = "hotel_reservation_test"
+	USER_COLLECTION    = "users"
+	HOTEL_COLLECTION   = "hotels"
+	ROOM_COLLECTION    = "rooms"
+	BOOKING_COLLECTION = "booking"
+	DB_URI             = "mongodb://localhost:27017"
 )
 
 func ToObjectID(id string) (primitive.ObjectID, error) {
@@ -22,7 +23,8 @@ func ToObjectID(id string) (primitive.ObjectID, error) {
 }
 
 type Store struct {
-	User  UserStore
-	Hotel HotelStore
-	Room  RoomStore
+	User    UserStore
+	Hotel   HotelStore
+	Room    RoomStore
+	Booking BookingStore
 }

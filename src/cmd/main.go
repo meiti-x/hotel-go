@@ -25,13 +25,15 @@ func main() {
 	}
 
 	var (
-		hotelStore = db.NewMongoHotelStore(client)
-		roomStore  = db.NewMongoRoomStore(client, hotelStore)
-		userStore  = db.NewMongoUserStore(client)
-		store      = &db.Store{
-			Room:  roomStore,
-			Hotel: hotelStore,
-			User:  userStore,
+		hotelStore   = db.NewMongoHotelStore(client)
+		roomStore    = db.NewMongoRoomStore(client, hotelStore)
+		userStore    = db.NewMongoUserStore(client)
+		bookingStore = db.NewMongoBookingStore(client)
+		store        = &db.Store{
+			Room:    roomStore,
+			Hotel:   hotelStore,
+			User:    userStore,
+			Booking: bookingStore,
 		}
 		userHandler  = handler.NewUserHandler(db.NewMongoUserStore(client))
 		hotelHandler = handler.NewHotelHanlder(store)
@@ -59,5 +61,6 @@ func main() {
 
 	// booking
 	apiv1.Post("/room/:id/book", roomHandler.HandleBookRoom)
+	// apiv1.Post("/bookings", book.HandleBookRoom)
 	app.Listen(":5000")
 }
