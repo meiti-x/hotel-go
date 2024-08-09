@@ -1,4 +1,4 @@
-package middleware
+package api
 
 import (
 	"fmt"
@@ -7,12 +7,12 @@ import (
 	"github.com/meiti-x/hotel-go/src/types"
 )
 
-func AdminAuth(c *fiber.Ctx) error {
+func GetAuthenicatedUser(c *fiber.Ctx) (*types.User, error) {
 	user, ok := c.Context().UserValue("user").(*types.User)
-
-	if !ok || !user.IsAdmin {
-		return fmt.Errorf("not Authorized")
+	if !ok {
+		return nil, fmt.Errorf("unauthorized")
 	}
-	return c.Next()
+
+	return user, nil
 
 }

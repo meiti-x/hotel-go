@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/meiti-x/hotel-go/src/types"
 	"go.mongodb.org/mongo-driver/bson"
@@ -13,6 +14,7 @@ type BookingStore interface {
 	InsertBooking(ctx context.Context, booking *types.Booking) (*types.Booking, error)
 	GetBookings(ctx context.Context, filter bson.M) ([]*types.Booking, error)
 	GetBookingByID(ctx context.Context, id string) (*types.Booking, error)
+	UpdateBooking(ctx context.Context, id string, data bson.M) (*types.Booking, error)
 	GetRooms(ctx context.Context, filter bson.M) ([]*types.Room, error)
 }
 
@@ -35,6 +37,22 @@ func (s *MongoBookingStore) GetBookingByID(ctx context.Context, id string) (*typ
 		return nil, err
 	}
 	if err := s.coll.FindOne(ctx, bson.M{"_id": oid}).Decode(&booking); err != nil {
+		return nil, err
+	}
+	return &booking, nil
+}
+
+func (s *MongoBookingStore) UpdateBooking(ctx context.Context, id string, update bson.M) (*types.Booking, error) {
+	var booking types.Booking
+	fmt.Println(id)
+	oid, err := ToObjectID(id)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(oid)
+	_, err = s.coll.UpdateByID(ctx, oid, bson.M{"$set": update})
+
+	if err != nil {
 		return nil, err
 	}
 	return &booking, nil

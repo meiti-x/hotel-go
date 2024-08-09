@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 
+	"github.com/meiti-x/hotel-go/src/api/handler"
 	"github.com/meiti-x/hotel-go/src/db"
 	"github.com/meiti-x/hotel-go/src/types"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -47,6 +49,7 @@ func seedUser(isAdmin bool, user *types.User) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Printf("\nEmail: %s \n\nToken: %s \n=============\n", user.Email, handler.CreateTokenFromUser(user))
 }
 
 func seedHotel(name string, location string, rate int) {
