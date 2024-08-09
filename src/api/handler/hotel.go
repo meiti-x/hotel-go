@@ -37,7 +37,9 @@ func (h *HotelHandler) HandleGetHotel(c *fiber.Ctx) error {
 func (h *HotelHandler) HandleGetHotelRooms(c *fiber.Ctx) error {
 	hotelID := c.Params("id")
 	oid, err := db.ToObjectID(hotelID)
-
+	if err != nil {
+		return err
+	}
 	filter := bson.D{{"hotelID", oid}}
 	rooms, err := h.store.Room.GetAllRooms(c.Context(), filter)
 	if err != nil {

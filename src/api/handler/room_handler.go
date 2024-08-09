@@ -117,5 +117,9 @@ func (h *RoomHandler) HandleGetRooms(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
+
+	// for _, room := range rooms {
+	// 	h.isRoomAvailbeForBook(room)
+	// }
 	return c.JSON(rooms)
 }

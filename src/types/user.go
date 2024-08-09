@@ -20,6 +20,7 @@ type CreateUserParmas struct {
 	LastName  string `json:"lastName"`
 	Email     string `json:"email"`
 	Password  string `json:"password"`
+	IsAdmin   bool
 }
 
 func (c *CreateUserParmas) Validate() map[string]string {
@@ -58,6 +59,7 @@ type User struct {
 	LastName          string             `bson:"lastName" json:"lastName"`
 	Email             string             `bson:"email" json:"email"`
 	EncryptedPassword string             `bson:"encryptedPassword" json:"-"`
+	IsAdmin           bool               `bson:"isAdmin" json:"isAdmin"`
 }
 
 func NewUserFromParams(params CreateUserParmas) (*User, error) {

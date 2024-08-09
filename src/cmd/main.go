@@ -35,13 +35,15 @@ func main() {
 			User:    userStore,
 			Booking: bookingStore,
 		}
-		userHandler  = handler.NewUserHandler(db.NewMongoUserStore(client))
-		hotelHandler = handler.NewHotelHanlder(store)
-		authHandler  = handler.NewAuthHandler(userStore)
-		roomHandler  = handler.NewRoomHanlder(store)
-		app          = fiber.New(config)
-		apiv1NoAuth  = app.Group("/api")
-		apiv1        = app.Group("/api/v1", middleware.JWTAuth(userStore))
+		userHandler    = handler.NewUserHandler(db.NewMongoUserStore(client))
+		hotelHandler   = handler.NewHotelHanlder(store)
+		authHandler    = handler.NewAuthHandler(userStore)
+		roomHandler    = handler.NewRoomHanlder(store)
+		BookingHandler = handler.NewBookingHanlder(store)
+		app            = fiber.New(config)
+		apiv1NoAuth    = app.Group("/api")
+		apiv1          = app.Group("/api/v1", middleware.JWTAuth(userStore))
+		admin          = apiv1.Group("/admin", middleware.AdminAuth)
 	)
 
 	// auth handlers
@@ -59,9 +61,17 @@ func main() {
 	apiv1.Get("/hotels/:id", hotelHandler.HandleGetHotel)
 	apiv1.Get("/hotels/:id/rooms", hotelHandler.HandleGetHotelRooms)
 
-	// booking
+	// room handler
 	apiv1.Post("/rooms", roomHandler.HandleGetRooms)
 	apiv1.Post("/rooms/:id/book", roomHandler.HandleBookRoom)
+
+	// TODO cancel booking
+
+	// booking
+	apiv1.Get("/bookings/:id", BookingHandler.HandleGetBooking)
+
+	// admin routes
+	admin.Get("/bookings", BookingHandler.HandleGetBookings)
 
 	app.Listen(":5000")
 }
