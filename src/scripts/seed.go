@@ -7,6 +7,7 @@ import (
 
 	"github.com/meiti-x/hotel-go/src/api/handler"
 	"github.com/meiti-x/hotel-go/src/db"
+	"github.com/meiti-x/hotel-go/src/db/fixture"
 	"github.com/meiti-x/hotel-go/src/types"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -92,6 +93,26 @@ func seedHotel(name string, location string, rate int) {
 }
 
 func main() {
+
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(db.DB_URI))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err = client.Database(db.DBNAME).Drop(ctx); err != nil {
+		log.Fatal(err)
+	}
+	hotelStore = db.NewMongoHotelStore(client)
+	userStore = db.NewMongoUserStore(client)
+	roomStore = db.NewMongoRoomStore(client, hotelStore)
+
+	store := db.Store{
+		Hotel: hotelStore,
+		User:  userStore,
+		Room:  roomStore,
+	}
+
+	fixture.AddUser(&store, "testy", "fn test", "ln test", true)
 	seedHotel("Ilam", "The Crown of Zagros", 5)
 	seedUser(true, &types.User{
 		Email:     "admin@mahdi.com",
